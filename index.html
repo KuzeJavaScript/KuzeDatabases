@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Panel Serangan WhatsApp</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #111;
+      color: white;
+      padding: 20px;
+    }
+    h1 {
+      color: #00ff00;
+    }
+    .form-group {
+      margin-bottom: 15px;
+    }
+    label {
+      font-weight: bold;
+    }
+    input, select, button {
+      padding: 10px;
+      border: none;
+      border-radius: 5px;
+      width: 100%;
+      font-size: 16px;
+      margin-top: 5px;
+    }
+    button {
+      background-color: red;
+      color: white;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: darkred;
+    }
+  </style>
+</head>
+<body>
+  <h1>⚠️ WhatsApp Crash Panel</h1>
+
+  <div class="form-group">
+    <label for="target">Nomor Target (contoh: 628xxxx):</label>
+    <input type="text" id="target" placeholder="Masukkan nomor">
+  </div>
+
+  <div class="form-group">
+    <label for="type">Tipe Bug:</label>
+    <select id="type">
+      <option value="imageCrash">Image Crash</option>
+      <option value="stickerCrash">Sticker Crash</option>
+      <option value="locationCrash">Location Crash</option>
+      <option value="comboCrash">Combo (Image + Sticker)</option>
+    </select>
+  </div>
+
+  <button onclick="sendCrash()">💥 Kirim Bug</button>
+
+  <p id="status" style="margin-top: 20px;"></p>
+
+  <script>
+    async function sendCrash() {
+      const target = document.getElementById('target').value;
+      const type = document.getElementById('type').value;
+      const status = document.getElementById('status');
+
+      if (!target) {
+        return status.textContent = '❌ Nomor tidak boleh kosong!';
+      }
+
+      status.textContent = '⏳ Mengirim...';
+
+      try {
+        const response = await fetch(`http://localhost:5000/api/${type}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ target })
+        });
+
+        const result = await response.json();
+        status.textContent = result.message || '✅ Terkirim!';
+      } catch (error) {
+        status.textContent = '❌ Gagal mengirim bug!';
+        console.error(error);
+      }
+    }
+  </script>
+</body>
+</html>
